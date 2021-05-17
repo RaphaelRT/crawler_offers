@@ -1,0 +1,100 @@
+version: '3'
+services:
+  ## Service results
+  react-results:
+    restart: always
+    image: react-results
+    build: .
+    ports:
+      - '5000:5000'
+    environment:
+      NODE_ENV: production
+    volumes:
+      - .:/usr/src/app
+    depends_on:
+      - mongodb
+      
+  crawler:
+    restart: always
+    image: crawler_py
+    build:
+      context: .
+      dockerfile: ./crawler_py/Dockerfile
+    ports:
+      - '9500:9500'
+    volumes:
+      - .:/usr/src/app
+    depends_on:
+      - mongodb
+      - selenium-hub
+      - chrome
+
+  
+
+  ## Service Chrome
+  #chrome:
+    #image: selenium/standalone-chrome:latest
+    #hostname: chrome
+    #networks:
+      #- web
+    #privileged: true
+    #shm_size: 2g
+    #ports:
+      #- '4444:4444'
+  selenium-hub:
+    restart: always
+    image: selenium/hub:latest
+    hostname: selenium
+    container_name: selenium-hub
+    ports:
+      - "4444:4444"
+    environment:
+      GRID_MAX_SESSION: 5
+      GRID_TIMEOUT: 300
+      GRID_BROWSER_TIMEOUT: 300
+
+  chrome:
+    restart: always
+    image: selenium/node-chrome-debug:latest    
+    ports:
+      - "5900-5999:5900"
+    depends_on:
+      - selenium-hub
+    environment:
+      HUB_HOST: selenium-hub
+      HUB_PORT_4444_TCP_ADDR: selenium-hub
+      HUB_PORT_4444_TCP_PORT: 4444
+      DBUS_SESSION_BUS_ADDRESS: "/dev/null"
+      NODE_MAX_INSTANCES: 5
+      NODE_MAX_SESSION: 5
+    links:
+      - selenium-hub:hub
+  
+  ## Service MongoDB
+  mongodb:
+    restart: always
+    image: mongo:latest
+    hostname: mongodb
+    volumes:
+      - data:/data/db
+    ports:
+      - '27017:27017'
+
+  mongo-express:
+    restart: always
+    image: mongo-express
+    container_name: mongo-express
+    ports:
+        - 8081:8081
+    environment:
+        ME_CONFIG_MONGODB_SERVER: mongodb
+        ME_CONFIG_BASICAUTH_USERNAME: admin
+        ME_CONFIG_BASICAUTH_PASSWORD: password
+    depends_on:
+        - mongodb
+
+volumes:
+  data: {}
+
+  
+    

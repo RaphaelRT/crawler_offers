@@ -1,6 +1,7 @@
-# Getting Started with Create React App
+# command to run
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+docker network create web
+
 
 ## Available Scripts
 

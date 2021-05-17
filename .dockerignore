@@ -1,0 +1,8 @@
+.git
+py_env
+node_modules
+test_env
+__pycache__
+.ipynb_checkpoints
+build
+chrome_profile
