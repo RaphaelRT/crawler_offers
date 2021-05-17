@@ -76,55 +76,6 @@ app.get('/api/offers/fav', (req, rendered) => {
     }
   })
 });
-app.get('/api/refresh/', function (req,res) {
-  
-  /*
-  async function spawnChild() {
-    console.log("BEGIN SCRIPT!")
-    const pythonProcess = await spawn('python3', [path.join(__dirname, 'crawler.py')]);
-    console.log("SPAWNED!")
-    console.log(path.join(__dirname, 'crawler.py'))
-
-    pythonProcess.on('close', function (code) {
-      console.log('close: ' + code);
-      console.log("Script ended");
-    });
-   
-    pythonProcess.stderr.on('data', function (data) {
-        res.writeContinue()
-        console.log('stderr: ' + data);
-    });
-    pythonProcess.stdout.on('data', function (data) {
-      res.writeContinue()
-      console.log('stdout: ' + data);
-    });
-
-    let data = "";
-    for await (const chunk of pythonProcess.stdout) {
-      console.log('stdout chunk: '+chunk);
-      data += chunk;
-    }
-    let error = "";
-    for await (const chunk of pythonProcess.stderr) {
-      console.error('stderr chunk: '+chunk);
-      error += chunk;
-    }
-    const exitCode = await new Promise( (resolve, reject) => {
-      pythonProcess.on('close', resolve);
-    });
-    
-    if( exitCode) {
-        console.log(`subprocess error exit ${exitCode}, ${error}`)
-    }
-    return data;
-  }
-  spawnChild().then(
-    data=> {console.log("async result:\n" + data);res.json(data.toString('utf8'));},
-    err=>  {console.error("async error:\n" + err);}
-  );
-  */
-  //console.log(pythonProcess);
-});
 
 app.post('/api/update/:offerId', (req, rendered) => {
   console.log(req.params.offerId)
