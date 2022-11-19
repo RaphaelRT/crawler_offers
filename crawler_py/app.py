@@ -144,11 +144,11 @@ class Crawler :
             keyword_glass = keyword.replace(" ", "-")
             keyword = keyword.replace(" ", "+")
             #last 24 hours
-            self.links.append(f"https://fr.indeed.com/emplois?q={keyword}&l=Paris+(75)&rbl=Paris+(75)&jlid=38ec804400892bb8&jt=internship&sort=date&fromage=1")
+            self.links.append(f"https://fr.indeed.com/emplois?q={keyword}&l=Paris+(75)&rbl=Paris+(75)&jlid=38ec804400892bb8&jt=permanent&sort=date&fromage=1")
             #last 3 days
-            self.links.append(f"https://fr.indeed.com/emplois?q={keyword}&l=Paris+(75)&rbl=Paris+(75)&jlid=38ec804400892bb8&jt=internship&sort=date&fromage=3")
-            self.links.append(f"https://www.welcometothejungle.com/fr/jobs?refinementList%5Bcontract_type_names.fr%5D%5B0%5D=Stage&page=1&query={keyword}&aroundQuery=Paris%2C%20France&aroundLatLng=48.85718%2C2.34141&aroundRadius=20000&sortBy=mostRecent")
-            self.links.append(f"https://www.linkedin.com/jobs/search/?f_E=1&f_PP=101240143&geoId=105015875&keywords={keyword}&location=France&sortBy=DD")
+            self.links.append(f"https://fr.indeed.com/emplois?q={keyword}&l=Paris+(75)&rbl=Paris+(75)&jlid=38ec804400892bb8&jt=permanent&sort=date&fromage=3")
+            self.links.append(f"https://www.welcometothejungle.com/fr/jobs?refinementList%5Bcontract_type_names.fr%5D%5B0%5D=CDI&page=1&query={keyword}&aroundQuery=Paris%2C%20France&aroundLatLng=48.85718%2C2.34141&aroundRadius=20000&sortBy=mostRecent")
+            self.links.append(f"https://www.linkedin.com/jobs/search/?currentJobId=3239533589&f_E=2&f_PP=101240143&geoId=105015875&keywords={keyword}&location=France&sortBy=DD")
             glass_link.append(f"https://www.glassdoor.fr/ {keyword}")
         self.links.sort()
         self.links = self.links + glass_link
@@ -267,7 +267,7 @@ class Crawler :
 
                         head = card.find("h2", class_="title")
                         title = head.find("a").get_text().strip()
-                        if main_word in title.lower():
+                        if self.main_word in title.lower():
                             date = date_dt.strftime("%d/%m/%Y")
                             link = f"https://fr.indeed.com{head.find('a').get('href')}"
                             company = card.find("span", class_="company").get_text().strip()
@@ -281,7 +281,7 @@ class Crawler :
                     head = card.find("header")
                     a_el = head.find("a")
                     title = a_el.find("h3").get_text().strip()
-                    if main_word in title.lower():
+                    if self.main_word in title.lower():
                         date = pd.to_datetime(head.find("time")["datetime"]).strftime("%d/%m/%Y")
                         link = f"https://www.welcometothejungle.com{a_el.get('href')}"
                         company = head.find("h4").get_text().strip()
@@ -296,7 +296,7 @@ class Crawler :
                 cards = soup.find_all("li", class_="job-result-card")
                 for i, card in enumerate(cards):
                     title = card.find("h3", class_="job-result-card__title").get_text().strip()
-                    if main_word in title.lower():               
+                    if self.main_word in title.lower():               
                         date = pd.to_datetime(card.find("time")["datetime"]).strftime("%d/%m/%Y")
                         link = card.find("a", class_= "result-card__full-card-link").get('href')
                         company = card.find("a", href=lambda href: href and "company" in href).get_text().strip()
@@ -320,7 +320,7 @@ class Crawler :
                     if card.find("a"):
                         header = card.find_all("span", attrs={'class': None})
                         title = header[1].get_text().strip()
-                        if main_word in title.lower():
+                        if self.main_word in title.lower():
                             raw_date = card.find('div', attrs={'data-test': "job-age"}).get_text().strip().split(" ")
                             if len(raw_date) > 1:
                                 date_dt = datetime.today() - timedelta(days=int(raw_date[0]))
